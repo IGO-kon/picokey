@@ -28,6 +28,11 @@ custom hooks for report parsing and gesture translation.
 	- ON: pairing/re-encryption succeeded
 	- OFF: disconnected or pairing failed
 
+## Tested Hardware
+
+- Keyboard/Touchpad used during development:
+	- Amazon.co.jp: https://www.amazon.co.jp/dp/B0FT2DD1Z7
+
 ## Main Files
 
 - `CMakeLists.txt`
