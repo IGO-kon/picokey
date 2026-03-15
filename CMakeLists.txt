@@ -29,16 +29,37 @@ project(picokey C CXX ASM)
 pico_sdk_init()
 
 set(BTSTACK_EXAMPLE_PATH ${PICO_SDK_PATH}/lib/btstack/example)
-set(BTSTACK_EXAMPLE_SOURCE ${BTSTACK_EXAMPLE_PATH}/hog_boot_host_demo.c)
+set(BTSTACK_EXAMPLE_SOURCE ${BTSTACK_EXAMPLE_PATH}/hog_host_demo.c)
+set(BTSTACK_HOG_HOST_GATT ${BTSTACK_EXAMPLE_PATH}/hog_host_demo.gatt)
+set(BTSTACK_HOG_HOST_HEADER ${BTSTACK_EXAMPLE_PATH}/hog_host_demo.h)
+
+if (EXISTS "${BTSTACK_HOG_HOST_GATT}")
+    find_program(PYTHON3_EXECUTABLE python3)
+    if (NOT PYTHON3_EXECUTABLE)
+        message(FATAL_ERROR "python3 is required to generate ${BTSTACK_HOG_HOST_HEADER}")
+    endif()
+
+    execute_process(
+        COMMAND ${PYTHON3_EXECUTABLE} ${PICO_SDK_PATH}/lib/btstack/tool/compile_gatt.py
+                ${BTSTACK_HOG_HOST_GATT} ${BTSTACK_HOG_HOST_HEADER}
+        RESULT_VARIABLE HOG_HOST_GATT_GEN_RESULT
+    )
+    if (NOT HOG_HOST_GATT_GEN_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to generate ${BTSTACK_HOG_HOST_HEADER}")
+    endif()
+else()
+    message(FATAL_ERROR "Missing ${BTSTACK_HOG_HOST_GATT}")
+endif()
 
 add_executable(picokey
     src/main.c
     src/compat_stdio.c
     src/retarget_locks.c
     src/picokey_usb_hid.c
+    src/picokey_hids_hooks.c
+    src/picokey_sm_hooks.c
     src/picokey_pairing_monitor.c
     src/usb_descriptors.c
-    src/btstack_hooks.c
     ${BTSTACK_EXAMPLE_SOURCE}
 )
 
@@ -56,8 +77,7 @@ target_compile_definitions(picokey PRIVATE
 )
 
 set_source_files_properties(${BTSTACK_EXAMPLE_SOURCE} PROPERTIES
-    COMPILE_DEFINITIONS "setvbuf=picokey_setvbuf;gatt_client_listen_for_characteristic_value_updates=picokey_gatt_client_listen_for_characteristic_value_updates"
-    COMPILE_OPTIONS "-include;${CMAKE_CURRENT_LIST_DIR}/src/picokey_bt_hooks.h"
+    COMPILE_DEFINITIONS "setvbuf=picokey_setvbuf;hids_client_connect=picokey_hids_client_connect;sm_set_authentication_requirements=picokey_sm_set_authentication_requirements"
 )
 
 target_link_libraries(picokey

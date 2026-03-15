@@ -28,19 +28,25 @@ static const uint8_t desc_hid_report_keyboard[] = {
     TUD_HID_REPORT_DESC_KEYBOARD()
 };
 
+static const uint8_t desc_hid_report_mouse[] = {
+    TUD_HID_REPORT_DESC_MOUSE()
+};
+
 enum {
     ITF_NUM_CDC = 0,
     ITF_NUM_CDC_DATA,
     ITF_NUM_HID_KEYBOARD,
+    ITF_NUM_HID_MOUSE,
     ITF_NUM_TOTAL,
 };
 
-#define CONFIG_TOTAL_LEN (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_HID_DESC_LEN)
+#define CONFIG_TOTAL_LEN (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_DESC_LEN)
 
 #define EPNUM_CDC_NOTIF 0x81
 #define EPNUM_CDC_OUT 0x02
 #define EPNUM_CDC_IN 0x82
 #define EPNUM_HID_KEYBOARD 0x83
+#define EPNUM_HID_MOUSE 0x84
 
 static const uint8_t desc_configuration[] = {
     TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
@@ -50,6 +56,9 @@ static const uint8_t desc_configuration[] = {
 
     TUD_HID_DESCRIPTOR(ITF_NUM_HID_KEYBOARD, 0, HID_ITF_PROTOCOL_KEYBOARD, sizeof(desc_hid_report_keyboard),
                        EPNUM_HID_KEYBOARD, CFG_TUD_HID_EP_BUFSIZE, 5),
+
+    TUD_HID_DESCRIPTOR(ITF_NUM_HID_MOUSE, 0, HID_ITF_PROTOCOL_MOUSE, sizeof(desc_hid_report_mouse),
+                       EPNUM_HID_MOUSE, CFG_TUD_HID_EP_BUFSIZE, 5),
 };
 
 enum {
@@ -79,6 +88,10 @@ const uint8_t *tud_hid_descriptor_report_cb(uint8_t instance)
 {
     if (instance == PICOKEY_USB_HID_ITF_KEYBOARD) {
         return desc_hid_report_keyboard;
+    }
+
+    if (instance == PICOKEY_USB_HID_ITF_MOUSE) {
+        return desc_hid_report_mouse;
     }
 
     return NULL;

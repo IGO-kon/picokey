@@ -15,7 +15,7 @@ static void picokey_pair_led_set(bool on)
     (void)cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, on ? 1 : 0);
 }
 
-static void picokey_cdc_log(const char *fmt, ...)
+void picokey_pairing_monitor_log(const char *fmt, ...)
 {
     if (!tud_cdc_connected()) {
         return;
@@ -51,38 +51,38 @@ static void picokey_sm_event_handler(uint8_t packet_type, uint16_t channel, uint
 
     switch (hci_event_packet_get_type(packet)) {
     case SM_EVENT_JUST_WORKS_REQUEST:
-        picokey_cdc_log("[PAIR] Just Works requested\r\n");
+        picokey_pairing_monitor_log("[PAIR] Just Works requested\r\n");
         break;
     case SM_EVENT_NUMERIC_COMPARISON_REQUEST:
-        picokey_cdc_log("[PAIR] Numeric comparison: %06" PRIu32 " (auto confirm)\r\n",
-                        sm_event_numeric_comparison_request_get_passkey(packet));
+        picokey_pairing_monitor_log("[PAIR] Numeric comparison: %06" PRIu32 " (auto confirm)\r\n",
+                                   sm_event_numeric_comparison_request_get_passkey(packet));
         break;
     case SM_EVENT_PASSKEY_DISPLAY_NUMBER:
-        picokey_cdc_log("[PAIR] Type this PIN on BT keyboard: %06" PRIu32 "\r\n",
-                        sm_event_passkey_display_number_get_passkey(packet));
+        picokey_pairing_monitor_log("[PAIR] Type this PIN on BT keyboard: %06" PRIu32 "\r\n",
+                                   sm_event_passkey_display_number_get_passkey(packet));
         break;
     case SM_EVENT_PASSKEY_INPUT_NUMBER:
-        picokey_cdc_log("[PAIR] Host passkey input requested (not supported)\r\n");
+        picokey_pairing_monitor_log("[PAIR] Host passkey input requested (not supported)\r\n");
         break;
     case SM_EVENT_PAIRING_COMPLETE:
         if (sm_event_pairing_complete_get_status(packet) == ERROR_CODE_SUCCESS) {
             picokey_pair_led_set(true);
-            picokey_cdc_log("[PAIR] Pairing complete\r\n");
+            picokey_pairing_monitor_log("[PAIR] Pairing complete\r\n");
         } else {
             picokey_pair_led_set(false);
-            picokey_cdc_log("[PAIR] Failed status=%u reason=%u\r\n",
-                            sm_event_pairing_complete_get_status(packet),
-                            sm_event_pairing_complete_get_reason(packet));
+            picokey_pairing_monitor_log("[PAIR] Failed status=%u reason=%u\r\n",
+                                       sm_event_pairing_complete_get_status(packet),
+                                       sm_event_pairing_complete_get_reason(packet));
         }
         break;
     case SM_EVENT_REENCRYPTION_COMPLETE:
         if (sm_event_reencryption_complete_get_status(packet) == ERROR_CODE_SUCCESS) {
             picokey_pair_led_set(true);
-            picokey_cdc_log("[PAIR] Re-encryption complete\r\n");
+            picokey_pairing_monitor_log("[PAIR] Re-encryption complete\r\n");
         } else {
             picokey_pair_led_set(false);
-            picokey_cdc_log("[PAIR] Re-encryption failed status=%u\r\n",
-                            sm_event_reencryption_complete_get_status(packet));
+            picokey_pairing_monitor_log("[PAIR] Re-encryption failed status=%u\r\n",
+                                       sm_event_reencryption_complete_get_status(packet));
         }
         break;
     default:
@@ -101,7 +101,7 @@ static void picokey_hci_event_handler(uint8_t packet_type, uint16_t channel, uin
 
     if (hci_event_packet_get_type(packet) == HCI_EVENT_DISCONNECTION_COMPLETE) {
         picokey_pair_led_set(false);
-        picokey_cdc_log("[PAIR] Disconnected\r\n");
+        picokey_pairing_monitor_log("[PAIR] Disconnected\r\n");
     }
 }
 
