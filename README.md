@@ -2,6 +2,9 @@
 
 [![build](https://github.com/IGO-kon/picokey/actions/workflows/build.yml/badge.svg)](https://github.com/IGO-kon/picokey/actions/workflows/build.yml)
 
+- Japanese README: [`README.ja.md`](README.ja.md)
+- Creator: [`trackmakerDJ`](https://x.com/trackmakerDJ)
+
 BLE HID bridge firmware for Raspberry Pi Pico 2 W.
 
 ```text
