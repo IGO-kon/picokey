@@ -105,6 +105,13 @@ cmake -S . -B build -G "Unix Makefiles" -DPICO_BOARD=pico2_w
 cmake --build build -j
 ```
 
+## まず試したい方向け (作者ビルド済みUF2)
+
+作者が使っているのはこれです。とりあえず入れてみたい！という方は、
+こちらをラズパイピコ2Wに書き込んでください。
+
+- [`firmware/picokey.uf2`](firmware/picokey.uf2)
+
 ## 書き込み
 
 1. `BOOTSEL` を押しながら Pico 2 W を接続
