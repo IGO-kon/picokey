@@ -1,0 +1,38 @@
+name: build
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  firmware-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            cmake \
+            ninja-build \
+            gcc-arm-none-eabi \
+            libnewlib-arm-none-eabi \
+            python3 \
+            git
+
+      - name: Configure
+        run: cmake -S . -B build -DPICO_BOARD=pico2_w
+
+      - name: Build
+        run: cmake --build build -j
+
+      - name: Upload UF2 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: picokey-uf2
+          path: build/picokey.uf2
+          if-no-files-found: error

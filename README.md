@@ -1,5 +1,7 @@
 # picokey
 
+[![build](https://github.com/IGO-kon/picokey/actions/workflows/build.yml/badge.svg)](https://github.com/IGO-kon/picokey/actions/workflows/build.yml)
+
 BLE HID bridge firmware for Raspberry Pi Pico 2 W.
 
 ```text
@@ -174,3 +176,23 @@ Direction inversion is done in the two-finger path where
 - USB exposes both HID and CDC interfaces.
 - If CMake Tools extension shows generic configure failure, check terminal
 	`cmake -S . -B build` output directly for actionable diagnostics.
+
+## Community
+
+- License: `LICENSE` (MIT)
+- Contributing guide: `CONTRIBUTING.md`
+- Code of Conduct: `CODE_OF_CONDUCT.md`
+- Security reporting: `SECURITY.md`
+- Bug/feature templates: `.github/ISSUE_TEMPLATE/`
+- Pull request template: `.github/PULL_REQUEST_TEMPLATE.md`
+
+## Maintainer Publish Checklist
+
+If you want this repository to be easily usable by others, check these items:
+
+1. Set repository visibility to Public in GitHub settings.
+2. Keep Issues and Pull Requests enabled.
+3. Enable Discussions if you want community Q and A.
+4. Add repository topics, for example: `pico2w`, `bluetooth`, `hid`, `touchpad`, `firmware`.
+5. Keep CI green (`.github/workflows/build.yml`).
+6. Tag stable versions and publish Releases with notes and `picokey.uf2` artifact.
