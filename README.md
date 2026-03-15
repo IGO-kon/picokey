@@ -1,66 +1,66 @@
-# picokey
+# picokey (日本語)
 
 [![build](https://github.com/IGO-kon/picokey/actions/workflows/build.yml/badge.svg)](https://github.com/IGO-kon/picokey/actions/workflows/build.yml)
 
-- Japanese README: [`README.ja.md`](README.ja.md)
-- Creator: [`trackmakerDJ`](https://x.com/trackmakerDJ)
+- English README: [`README.en.md`](README.en.md)
+- 作成者: [`trackmakerDJ`](https://x.com/trackmakerDJ)
 
-BLE HID bridge firmware for Raspberry Pi Pico 2 W.
+Raspberry Pi Pico 2 W 用の BLE HID ブリッジファームウェアです。
 
 ```text
-Bluetooth Keyboard/Touchpad
-		-> (BLE HID over GATT)
+Bluetooth キーボード/タッチパッド
+        -> (BLE HID over GATT)
 Raspberry Pi Pico 2 W
-		-> (USB HID Keyboard + Mouse + CDC log)
+        -> (USB HID Keyboard + Mouse + CDC log)
 PC
 ```
 
-Current implementation is based on BTstack `hog_host_demo` (Report Mode) with
-custom hooks for report parsing and gesture translation.
+現在は BTstack の `hog_host_demo` (Report Mode) をベースに、
+独自フックでレポート解析とジェスチャ変換を行っています。
 
-## Current Features
+## できること
 
-- BLE keyboard input -> USB keyboard output
-- Touchpad pointer -> USB mouse output
-- One-finger tap -> left click
-- Two-finger tap -> right click
-- Two-finger vertical movement -> wheel scroll
-- Tap-and-drag (arm on tap, then drag on next touch)
-- Pairing/status log via USB CDC (`/dev/ttyACM*`)
-- Pico W LED status:
-	- ON: pairing/re-encryption succeeded
-	- OFF: disconnected or pairing failed
+- BLE キーボード入力 -> USB キーボード出力
+- タッチパッド座標 -> USB マウス出力
+- 1本指タップ -> 左クリック
+- 2本指タップ -> 右クリック
+- 2本指の縦移動 -> スクロール
+- タップ後ドラッグ (タップでアーム、次タッチでドラッグ)
+- USB CDC 経由のペアリング/状態ログ (`/dev/ttyACM*`)
+- Pico W LED ステータス:
+  - ON: pairing/re-encryption 成功
+  - OFF: 切断または pairing 失敗
 
-## Tested Hardware
+## 動作確認ハードウェア
 
-- Keyboard/Touchpad used during development:
-	- Amazon.co.jp: https://www.amazon.co.jp/dp/B0FT2DD1Z7
+- 開発時に使用したキーボード/タッチパッド:
+  - Amazon.co.jp: https://www.amazon.co.jp/dp/B0FT2DD1Z7
 
-## Main Files
+## 主要ファイル
 
 - `CMakeLists.txt`
-	- Pico SDK setup
-	- BTstack `hog_host_demo.c` selection
-	- GATT header generation (`hog_host_demo.gatt` -> `hog_host_demo.h`)
-	- Hook symbol redirection (`hids_client_connect`, `sm_set_authentication_requirements`)
+  - Pico SDK 設定
+  - BTstack `hog_host_demo.c` 選択
+  - GATT ヘッダ生成 (`hog_host_demo.gatt` -> `hog_host_demo.h`)
+  - フック用シンボル差し替え (`hids_client_connect`, `sm_set_authentication_requirements`)
 - `src/main.c`
-	- startup and BTstack run loop
+  - 起動処理と BTstack run loop
 - `src/picokey_hids_hooks.c`
-	- report parser and all pointer/gesture tuning
+  - レポート解析とポインタ/ジェスチャ調整の中核
 - `src/picokey_sm_hooks.c`
-	- pairing/auth requirements hardening
+  - ペアリング認証要件の補強
 - `src/picokey_pairing_monitor.c`
-	- CDC diagnostics and LED status control
+  - CDC ログと LED 制御
 - `src/picokey_usb_hid.c`
-	- TinyUSB HID queue sender (keyboard/mouse)
+  - TinyUSB HID 送信キュー
 - `src/usb_descriptors.c`
-	- USB descriptors (CDC + HID keyboard + HID mouse)
+  - USB descriptor (CDC + HID keyboard + HID mouse)
 - `src/tusb_config.h`
-	- TinyUSB class/endpoint config
+  - TinyUSB クラス/エンドポイント設定
 
-## Environment Setup
+## 環境構築
 
-### VS Code Extensions (recommended)
+### 推奨 VS Code 拡張
 
 - `ms-vscode.cpptools`
 - `ms-vscode.cmake-tools`
@@ -68,36 +68,36 @@ custom hooks for report parsing and gesture translation.
 - `raspberry-pi.raspberry-pi-pico`
 - `paulober.pico-w-go`
 
-### Required Tools
+### 必要ツール
 
 - `cmake` 3.13+
-- ARM GNU toolchain (`arm-none-eabi-gcc`)
-- `python3` (for BTstack GATT compile step)
+- ARM GNU ツールチェーン (`arm-none-eabi-gcc`)
+- `python3` (BTstack GATT 生成用)
 - `git`
 
-Ubuntu/Debian example:
+Ubuntu/Debian 例:
 
 ```bash
 sudo apt update
 sudo apt install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi python3 git
 ```
 
-If `arm-none-eabi-gcc` is not in `PATH`, this project auto-detects the Arduino
-RP2040 toolchain under `~/.arduino15/packages/rp2040/tools/pqt-gcc/*/bin`.
+`arm-none-eabi-gcc` が `PATH` になくても、
+`~/.arduino15/packages/rp2040/tools/pqt-gcc/*/bin` を自動検出します。
 
-## Build
+## ビルド
 
 ```bash
 cmake -S . -B build -DPICO_BOARD=pico2_w
 cmake --build build -j
 ```
 
-Generated artifacts:
+生成物:
 
 - `build/picokey.uf2`
 - `build/picokey.elf`
 
-If configure/build cache is broken, recreate `build/`:
+キャッシュが壊れた場合の再作成:
 
 ```bash
 rm -rf build
@@ -105,102 +105,97 @@ cmake -S . -B build -G "Unix Makefiles" -DPICO_BOARD=pico2_w
 cmake --build build -j
 ```
 
-## Flash
+## 書き込み
 
-1. Hold `BOOTSEL` and connect Pico 2 W.
-2. Copy `build/picokey.uf2` to mounted `RPI-RP2` or `RP2350` volume.
-3. Device reboots automatically.
+1. `BOOTSEL` を押しながら Pico 2 W を接続
+2. `build/picokey.uf2` を `RPI-RP2` または `RP2350` にコピー
+3. 自動で再起動
 
-Example:
+例:
 
 ```bash
 cp build/picokey.uf2 /media/$USER/RP2350/
 ```
 
-## Pairing / Debug Log
+## ペアリング/デバッグログ
 
 ```bash
 screen /dev/ttyACM0 115200
 ```
 
-Typical messages:
+主なログ:
 
 - `[PAIR] ...`
 - `[HID] service connected ...`
 - `[HID] tap-click`
 - `[HID] two-finger-tap-right-click`
 
-## Tuning Guide
+## 調整ガイド
 
-Most behavior tuning is in `src/picokey_hids_hooks.c`.
+挙動調整の多くは `src/picokey_hids_hooks.c` で行います。
 
-### Pointer speed
+### ポインタ速度
 
 - `PICOKEY_TOUCHPAD_SPEED_NUMERATOR`
 - `PICOKEY_TOUCHPAD_SPEED_DENOMINATOR`
 
-Lower `NUMERATOR / DENOMINATOR` makes cursor slower.
+`NUMERATOR / DENOMINATOR` を下げるとカーソル速度が遅くなります。
 
-### One-finger tap (left click)
+### 1本指タップ (左クリック)
 
 - `PICOKEY_TAP_MAX_DURATION_MS`
 - `PICOKEY_TAP_MAX_TOTAL_MOTION`
 
-Increase values to make tap easier to trigger.
+値を上げるとタップ判定が通りやすくなります。
 
-### Two-finger tap (right click)
+### 2本指タップ (右クリック)
 
 - `PICOKEY_TWO_FINGER_TAP_MAX_DURATION_MS`
 - `PICOKEY_TWO_FINGER_TAP_MAX_TOTAL_MOTION`
 
-Increase values to make right-click tap easier.
+値を上げると右クリック判定が通りやすくなります。
 
-### Staggered two-finger landing (timing tolerance)
+### 1本目 -> 2本目の時間ずれ許容
 
 - `PICOKEY_TWO_FINGER_JOIN_MAX_DELAY_MS`
 - `PICOKEY_TWO_FINGER_JOIN_MAX_TOTAL_MOTION`
 
-These control tolerance for `finger1 then finger2 shortly after` behavior.
+「1本目が先、2本目が少し遅れて着地」するケースの許容設定です。
 
-### Tap-and-drag
+### タップ後ドラッグ
 
 - `PICOKEY_DRAG_ARM_TIMEOUT_MS`
 
-Larger value keeps drag-arming alive longer after a tap-click.
+値を上げると、タップ後にドラッグ開始できる猶予が長くなります。
 
-### Two-finger scroll feel
+### 2本指スクロール感度
 
 - `PICOKEY_SCROLL_DELTA_PER_STEP`
 
-Smaller value makes wheel events fire more often (faster scrolling).
+値を下げるとスクロールイベント発生頻度が上がります。
 
-Direction inversion is done in the two-finger path where
-`tracker->scroll_remainder` is updated.
+## 注意点
 
-## Notes
+- `src/btstack_hooks.c` と `src/picokey_bt_hooks.h` は旧 boot-mode ルートの名残で、
+  現在の CMake ターゲットでは使っていません。
+- USB では HID と CDC を同時に公開しています。
+- CMake Tools が曖昧な configure エラーを出す場合は、
+  ターミナルで `cmake -S . -B build` を直接実行して詳細を確認してください。
 
-- `src/btstack_hooks.c` and `src/picokey_bt_hooks.h` are legacy boot-mode path
-	artifacts and are not used by current CMake target.
-- USB exposes both HID and CDC interfaces.
-- If CMake Tools extension shows generic configure failure, check terminal
-	`cmake -S . -B build` output directly for actionable diagnostics.
+## コミュニティ情報
 
-## Community
+- ライセンス: `LICENSE` (MIT)
+- コントリビュート: `CONTRIBUTING.md`
+- 行動規範: `CODE_OF_CONDUCT.md`
+- セキュリティ報告: `SECURITY.md`
+- Issue テンプレ: `.github/ISSUE_TEMPLATE/`
+- PR テンプレ: `.github/PULL_REQUEST_TEMPLATE.md`
 
-- License: `LICENSE` (MIT)
-- Contributing guide: `CONTRIBUTING.md`
-- Code of Conduct: `CODE_OF_CONDUCT.md`
-- Security reporting: `SECURITY.md`
-- Bug/feature templates: `.github/ISSUE_TEMPLATE/`
-- Pull request template: `.github/PULL_REQUEST_TEMPLATE.md`
+## 公開時チェックリスト (管理者向け)
 
-## Maintainer Publish Checklist
-
-If you want this repository to be easily usable by others, check these items:
-
-1. Set repository visibility to Public in GitHub settings.
-2. Keep Issues and Pull Requests enabled.
-3. Enable Discussions if you want community Q and A.
-4. Add repository topics, for example: `pico2w`, `bluetooth`, `hid`, `touchpad`, `firmware`.
-5. Keep CI green (`.github/workflows/build.yml`).
-6. Tag stable versions and publish Releases with notes and `picokey.uf2` artifact.
+1. GitHub リポジトリを Public に設定
+2. Issues / Pull Requests を有効化
+3. 必要なら Discussions を有効化
+4. トピックを設定 (`pico2w`, `bluetooth`, `hid`, `touchpad`, `firmware` など)
+5. CI (`.github/workflows/build.yml`) を常にグリーン維持
+6. 安定版タグを打って Releases に `picokey.uf2` を添付

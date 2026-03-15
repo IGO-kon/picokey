@@ -2,7 +2,7 @@
 
 [![build](https://github.com/IGO-kon/picokey/actions/workflows/build.yml/badge.svg)](https://github.com/IGO-kon/picokey/actions/workflows/build.yml)
 
-- English README: [`README.md`](README.md)
+- English README: [`README.en.md`](README.en.md)
 - 作成者: [`trackmakerDJ`](https://x.com/trackmakerDJ)
 
 Raspberry Pi Pico 2 W 用の BLE HID ブリッジファームウェアです。
