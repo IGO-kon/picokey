@@ -191,11 +191,3 @@ screen /dev/ttyACM0 115200
 - Issue テンプレ: `.github/ISSUE_TEMPLATE/`
 - PR テンプレ: `.github/PULL_REQUEST_TEMPLATE.md`
 
-## 公開時チェックリスト (管理者向け)
-
-1. GitHub リポジトリを Public に設定
-2. Issues / Pull Requests を有効化
-3. 必要なら Discussions を有効化
-4. トピックを設定 (`pico2w`, `bluetooth`, `hid`, `touchpad`, `firmware` など)
-5. CI (`.github/workflows/build.yml`) を常にグリーン維持
-6. 安定版タグを打って Releases に `picokey.uf2` を添付
