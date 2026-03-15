@@ -1,0 +1,9 @@
+{
+  "cmake.configureOnOpen": true,
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.buildDirectory": "${workspaceFolder}/build",
+  "cmake.configureSettings": {
+    "PICO_BOARD": "pico2_w"
+  },
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}
